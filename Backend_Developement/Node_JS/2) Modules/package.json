@@ -1,0 +1,18 @@
+{
+  "name":"Modules",
+  "version": "1.0.0",
+  "description": "1. NodeJS is a open source, cross flatform runtime environment for executing javascript code outside of a browser.\r 2. Built on Chrome's V8 engine.\r 3. V8 is written in C++ for speed.\r 4. V8 + Backend Feature = NodeJS.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.11"
+  }
+}
