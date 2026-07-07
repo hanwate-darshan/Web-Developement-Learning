@@ -3,12 +3,13 @@ import dotenv from "dotenv"
 import connectDB from "./config/db.js";
 import User from "./models/user.models.js";
 import Redis from "ioredis";
+import rateLimitter from "./middleware/rate.limit.js";
 dotenv.config()
 
 const app = express();
 app.use(express.json())
 
-const redis = new Redis(process.env.REDIS_URL)
+export  const redis = new Redis(process.env.REDIS_URL)
 
 
 const PORT = process.env.PORT;
@@ -33,7 +34,9 @@ app.post("/create",async (req,res)=>{
 })
 
 // without redis API
-app.get("/get",async (req,res)=>{
+
+// Rate Limitter middleware
+app.get("/get",rateLimitter,async (req,res)=>{
     const user = await User.find({}) // two users are fetch
     return res.json(user)
 })
@@ -91,11 +94,19 @@ app.post("/verify-otp",async (req,res) => {
         return res.status(400).json({"message":"Incorrect OTP"})
     }
 
+    // deleting otp
+    await redis.del(`otp:${email}`)
+
     return res.json({message:"OTP verified"})
 
 
     return  res.json({otp})
 })
+
+
+
+
+
 
 
 
