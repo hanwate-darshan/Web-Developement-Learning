@@ -61,7 +61,48 @@ app.get("/get-with-redis",async (req,res) => {
 
 
 
+// redis for OTP
+// send otp
+app.post("/send-otp",async (req,res)=>{
+    const {email} = req.body
+
+
+    const otp = Math.floor(100000 + Math.random()*900000).toString()
+
+    await redis.set(`otp:${email}`,otp,"EX",30)
+    
+    return res.json({otp})
+
+
+
+})
+
+// verfiy Otp 
+
+app.post("/verify-otp",async (req,res) => {
+    const {email} = req.body
+    const cachedOTP = await redis.get(`otp:${email}`)
+
+    if(!cachedOTP){
+        return res.status(400).json({"message":"otp not found or has be expired.."})
+    }
+
+    if(cachedOTP != otp){
+        return res.status(400).json({"message":"Incorrect OTP"})
+    }
+
+    return res.json({message:"OTP verified"})
+
+
+    return  res.json({otp})
+})
+
+
+
+
 app.listen(PORT, () => {
     connectDB();
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
