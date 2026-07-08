@@ -4,6 +4,8 @@ import connectDB from "./config/db.js";
 import User from "./models/user.models.js";
 import Redis from "ioredis";
 import rateLimitter from "./middleware/rate.limit.js";
+import sendEmail from "./config/sendEmail.js";
+import emailQueue from "./queue.js";
 dotenv.config()
 
 const app = express();
@@ -30,6 +32,7 @@ app.post("/create",async (req,res)=>{
           password
     })
 
+    await emailQueue.add("send-email",{email})
     return res.json(user)
 })
 
